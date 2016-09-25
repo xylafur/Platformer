@@ -4,7 +4,7 @@ var won = false;
 
 var canvas = document.createElement("canvas"), c = canvas.getContext("2d");
 canvas.width = 800; canvas.height = 400;document.body.appendChild(canvas);
-var gravity = - 5;
+var gravity = - 2;
 
 //This is just an array that holds all of the platform objects
 var platforms =  [new Platform(0, canvas.height - 60), new Platform(30, canvas.height - 30) , new Platform(100, canvas.height - 100), new Platform(20, canvas.height - 140), new Platform(canvas.width - 180, canvas.height - 150), new Platform(canvas.width - 220, 210, 10, 20), new Platform(canvas.width - 300, 190), new Platform(canvas.width - 350, 190, 10, 20), new Platform(canvas.width - 400, 190, 10, 20), new Platform(canvas.width - 500, 150)];
