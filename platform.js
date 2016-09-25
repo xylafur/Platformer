@@ -1,26 +1,36 @@
+
 //creates the canvas
+var won = false;
+
 var canvas = document.createElement("canvas"), c = canvas.getContext("2d");
 canvas.width = 800; canvas.height = 400;document.body.appendChild(canvas);
-var gravity = - 5;
-var platforms =  [new Platform(0, canvas.height - 60), new Platform(30, canvas.height - 30) , new Platform(100, canvas.height - 80), new Platform(150, canvas.height - 110)];
-var platLength = 50; //length of platforms
+var gravity = - 2;
+
+//This is just an array that holds all of the platform objects
+var platforms =  [new Platform(0, canvas.height - 60), new Platform(30, canvas.height - 30) , new Platform(100, canvas.height - 100), new Platform(20, canvas.height - 140), new Platform(canvas.width - 180, canvas.height - 150), new Platform(canvas.width - 220, 210, 10, 20), new Platform(canvas.width - 300, 190), new Platform(canvas.width - 350, 190, 10, 20), new Platform(canvas.width - 400, 190, 10, 20), new Platform(canvas.width - 500, 150)];
+
+var platLength = 50; //width of platforms
 
 
 var p = new Player();
+var win = new WinBox(canvas.width - 500, 140);
 
-//draws the background, platforms and the player
+//draws the background, platforms and the player 
 setInterval(function(){
+  checkWin();
  c.fillStyle = "green";
   c.fillRect(0, 3 * canvas.height / 4, canvas.width, canvas.height);
   c.fillStyle = "blue";
   c.fillRect(0, 0, canvas.width, 3 * canvas.height /4);
   p.draw();
+  
   //alert(2);
-
+  
   for(i = 0; i < platforms.length; i++){
     platforms[i].draw();
     //alert(platforms[i].x);
   }
+  win.draw();
 },30);
 
 
@@ -36,22 +46,42 @@ document.addEventListener('keydown', function(event){
   if(event.keyCode == 32 && p.grounded){
     p.jumping = true;
   }
-});
+}); 
 
 //platform object
-function Platform(xPos, yPos){
+function Platform(xPos, yPos, height = 10, width = 50){
   this.x = xPos;this.y = yPos;
-}
-Platform.prototype.draw = function(){
-  c.fillStyle="red";
-  c.fillRect(this.x, this.y, p.sideLength * 5, p.sideLength);
+  this.height = height;
+  this.width =  width;
 }
 
+Platform.prototype.draw = function(){
+  c.fillStyle="red";
+  c.fillRect(this.x, this.y, this.width, this.height);
+}
+
+//Box that the player must reach to win
+function WinBox(xPos, yPos){
+  this.x = xPos;this.y = yPos;
+}
+WinBox.prototype.draw = function(){
+  c.fillStyle ="purple";
+  c.fillRect(this.x, this.y, p.sideLength, p.sideLength);
+}
+
+//checks to see if the player intersects the win box and wins the game!
+checkWin = function(){
+  if(p.x == win.x && p.y ==win.y){
+    
+      alert("You win!");
+    
+  }
+}
 
 //All below relates to the player object
 function Player(){
   this.sideLength = 10;
-  this.x = 50; this.y = 50;
+  this.x = canvas.width / 2; this.y = canvas.height; 
   this.vx = 0; this.vy = 0;
   this.maxJump = 10;this.jumpCount = this.maxJump;
   this.jumping = false;
@@ -75,7 +105,7 @@ var checkBorder = function(p){
   }
 }
 //jump is always called inside the Player.draw method
-//but the player will only jump when the jumping variable
+//but the player will only jump when the jumping variable 
 //is true (space and grounded)
 var jump = function(p){
   if(p.jumping && p.jumpCount > 0){
@@ -114,7 +144,7 @@ var checkGrounded = function(p){
   else if(onPlatform(p)){
    // alert("on Platform");
       p.y = platforms[whichPlatform(p)].y - p.sideLength;
-
+    
     //sets player location to right on top of the platform if its on it
       if(!p.grounded){
         p.jumping = false;
@@ -131,7 +161,7 @@ var onPlatform = function(p){
   for(i = 0; i < platforms.length; i++){
     //loops through the array of playform objects and detects if the player is on any of them
     if(p.y + p.sideLength == platforms[i].y ){
-      if(p.x  >= platforms[i].x && p.x + p.sideLength <= platforms[i].x + (p.sideLength * 5) )
+      if(p.x  >= platforms[i].x && p.x + p.sideLength <= platforms[i].x + (platforms[i].width) )
         return true;
     }
   }
